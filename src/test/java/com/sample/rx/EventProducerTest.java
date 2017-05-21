@@ -104,6 +104,7 @@ public class EventProducerTest {
         final List<String> items1 = subscriber1.getOnNextEvents();
         final List<String> items2 = subscriber2.getOnNextEvents();
 
+        assertThat(items1).hasSameSizeAs(items2);
         for (int i = 0; i < items1.size(); i++) {
             assertThat(items1.get(i)).isSameAs(items2.get(i));
         }
