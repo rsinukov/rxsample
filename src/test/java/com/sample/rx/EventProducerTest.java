@@ -90,6 +90,26 @@ public class EventProducerTest {
     }
 
     @Test
+    public void eventsObservable_emitsSameItemsForAllSubscribers() throws Exception {
+        final Observable<String> events = getProducer(2, 0, 1).events();
+
+        final TestSubscriber<String> subscriber1 = new TestSubscriber<>();
+        events.subscribe(subscriber1);
+        final TestSubscriber<String> subscriber2 = new TestSubscriber<>();
+        events.subscribe(subscriber2);
+
+        periodScheduler.advanceTimeBy(5, TimeUnit.MILLISECONDS);
+        delayScheduler.advanceTimeBy(1, TimeUnit.MILLISECONDS);
+
+        final List<String> items1 = subscriber1.getOnNextEvents();
+        final List<String> items2 = subscriber2.getOnNextEvents();
+
+        for (int i = 0; i < items1.size(); i++) {
+            assertThat(items1.get(i)).isSameAs(items2.get(i));
+        }
+    }
+
+    @Test
     public void eventsObservable_emitsNaturalNumbersAsString() throws Exception {
         final Observable<String> events = getProducer(1, 0, 1).events();
 
